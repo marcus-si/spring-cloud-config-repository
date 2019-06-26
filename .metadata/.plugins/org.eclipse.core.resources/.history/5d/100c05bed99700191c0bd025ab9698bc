@@ -1,0 +1,64 @@
+package com.example.springclouddynamicdatasources;
+
+
+import java.util.Map;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import javax.validation.constraints.NotBlank;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class DataSourceController {
+	private static final Logger LOGGER =LoggerFactory.getLogger(DataSourceController.class);
+	@Value("${spring.cloud.nacos.config.namespace}")	
+	private String nameString;	
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private DataSourceProperties dataSourceProperties;	
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+
+	@GetMapping("/save/{dataSourceId}")
+	public String saveUser(@PathVariable @NotBlank Integer dataSourceId) {
+		//save to database A		
+		ClientDatabase clientDatabase = ClientDatabase.ofId(dataSourceId);
+		ClientDatabaseContextHolder.set(clientDatabase);
+		User user = new User();
+		user.setName(clientDatabase.getName());
+		try {
+			userRepository.save(user);
+			return String.format("Succeeded. User %s has been save to Database %s", user.getName(), clientDatabase);			
+		} catch (Exception e) {
+			return String.format("Failed to save User %s to Database %s", user.getName(), clientDatabase);
+		}	
+
+		
+	}
+	
+	@GetMapping("/update")
+	public String updateDatasources() {
+		try {
+			DataSource bean3 = defaultListableBeanFactory.getBean(DataSource.class);		
+			return "update data sources successfully." + nameString;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Failed to update data sources."  + dataSourceProperties.getDataSourceProperties(null);
+		}
+		
+		
+	}
+	
+
+
+}

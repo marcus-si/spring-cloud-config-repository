@@ -1,0 +1,14 @@
+spring:
+   cloud:
+    nacos:
+      config:        
+        file-extension: properties
+        group: nacos_consumer
+        prefix: nacos_consumer
+        server-addr: 192.168.66.100:8848
+        namespace: ad23a4bc-49f7-4767-9499-9d32359662c7 #dev
+        shared-dataids: 
+        refreshable-dataids:      
+      discovery:
+        register-enabled: false
+        server-addr: 192.168.66.100:8848            

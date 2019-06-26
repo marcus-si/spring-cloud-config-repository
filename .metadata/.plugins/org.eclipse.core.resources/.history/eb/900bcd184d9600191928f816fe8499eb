@@ -1,0 +1,41 @@
+dubbo:
+  application:
+    qos:
+      accept:
+        foreign:
+          ip: false
+      enable: true
+      port: 33333
+  cloud:
+    subscribed-services: nacos-producer
+  registry:
+    address: spring-cloud://localhost
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  port: 9082
+spring:
+  application:
+    name: nacos-consumer
+  cloud:
+    nacos:
+      config:
+        file-extension: properties
+        group: nacos_consumer
+        prefix: nacos_consumer
+        server-addr: 192.168.66.100:8848
+      discovery:
+        register-enabled: false
+        server-addr: 192.168.66.100:8848
+  main:
+    allow-bean-definition-overriding: true
+  profiles:
+    active: dev
+zuul:
+  routes:
+    myDemo:
+      path: /myDemo/**
+      url: forward:/demo

@@ -1,0 +1,64 @@
+package com.example.springclouddynamicdatasources;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.sql.DataSource;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
+import org.springframework.core.annotation.Order;
+import com.alibaba.fastjson.JSON;
+
+
+@Configuration
+@RefreshScope
+@Order(1)
+@ConfigurationProperties(prefix = "ds")
+public class DataSourceProperties {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceProperties.class);
+	
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+
+	private List<String> config = new ArrayList<>();
+
+	public List<String> getConfig() {
+		return config;
+	}
+
+	public void setConfig(List<String> config) {
+		this.config = config;
+	}
+
+	public List<DataSourcePojo> getDataSourceProperties() {
+		if (null == config) {
+			return null;
+		}
+		final List<DataSourcePojo> list = new ArrayList<>();
+		config.forEach(c -> {
+			list.add(JSON.parseObject(c, DataSourcePojo.class));
+		});
+		return list;
+	}
+
+	@EventListener(classes = {RefreshEvent.class})	
+	public void updateDataSources(RefreshEvent event) {
+		ClientDatasourceRouter dataSource = defaultListableBeanFactory.getBean(ClientDatasourceRouter.class);
+		dataSource.toString();
+		if ( null != dataSource ) {
+			dataSource.setMultiDataSources(getDataSourceProperties());
+		}
+		dataSource.toString();
+		LOGGER.info("changed properties:{}", event);
+	}
+	
+}

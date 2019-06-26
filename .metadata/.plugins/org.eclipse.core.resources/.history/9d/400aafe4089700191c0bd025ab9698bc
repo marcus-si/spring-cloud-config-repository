@@ -1,0 +1,5 @@
+package com.example.springclouddynamicdatasources;
+
+public class DataSource {
+
+}

@@ -1,0 +1,83 @@
+package com.example.springclouddynamicdatasources;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import javax.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.nacos.api.annotation.NacosProperties;
+import com.alibaba.nacos.api.config.annotation.NacosConfigListener;
+import com.alibaba.nacos.spring.context.annotation.EnableNacos;
+
+
+@Configuration
+@RefreshScope
+@Order(1)
+@ConfigurationProperties(prefix = "ds")
+@EnableNacos(globalProperties = @NacosProperties(serverAddr = "${spring.cloud.nacos.config.server-addr}", namespace = "${spring.cloud.nacos.config.namespace}"))
+public class DataSourceProperties {
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(DataSourceProperties.class);
+	
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+
+	@NotNull
+	private List<String> config = new ArrayList<>();
+
+	public List<String> getConfig() {
+		return config;
+	}
+
+	public void setConfig(List<String> config) {
+		this.config = config;
+	}
+
+	public List<DataSourcePojo> getDataSourceProperties(List<String> dsConfig) {
+		if ( null == dsConfig ) {
+			dsConfig = this.config;
+		}
+		final List<DataSourcePojo> list = new ArrayList<>();
+		dsConfig.forEach(c -> {
+			list.add(JSON.parseObject(c, DataSourcePojo.class));
+		});
+		return list;
+	}
+
+	@NacosConfigListener(dataId = "ds.properties")
+	public void updateDataSources(@NotNull Properties properties) {
+		final List<String> propsList = new ArrayList<>();
+		properties.forEach((k,v)->{
+			if (String.valueOf(k).matches("ds.config\\[\\d+\\]")) {
+				propsList.add(String.valueOf(v));
+			}
+		});
+		ClientDatasourceRouter dataSource = defaultListableBeanFactory.getBean(ClientDatasourceRouter.class);
+		if ( dataSource == null  ) {
+			return;
+		}
+		String[] beanNames = defaultListableBeanFactory.getBeanNamesForType(ClientDatasourceRouter.class);
+        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(ClientDatasourceRouter.class);
+        Map<Object, Object> dataSourceMap = dataSource.buildDataSourceMap(getDataSourceProperties(propsList));
+        defaultListableBeanFactory.removeBeanDefinition(beanNames[0]);
+        beanDefinitionBuilder.addPropertyValue("targetDataSources", dataSourceMap);
+        beanDefinitionBuilder.addPropertyValue("defaultTargetDataSource", dataSourceMap.get(ClientDatabase.ofId(1)));
+        defaultListableBeanFactory.registerBeanDefinition(beanNames[0], beanDefinitionBuilder.getRawBeanDefinition());
+
+		if ( null != dataSource ) {
+			dataSource.setMultiDataSources(getDataSourceProperties(propsList));
+		}
+		LOGGER.info("data sources updated:{}", properties);
+	}
+
+}

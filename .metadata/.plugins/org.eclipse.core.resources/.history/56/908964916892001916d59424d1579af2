@@ -1,0 +1,12 @@
+package eurekaserviceapi;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@FeignClient(name="EurekaService")
+public interface EurekaServiceApi {
+
+	@GetMapping("/get")
+	String getMsg();
+	
+}

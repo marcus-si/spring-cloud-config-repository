@@ -1,0 +1,13 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://server1:8762/eureka/,http://server2:8763/eureka/
+  instance:
+    prefer-ip-address: true
+server:
+  port: 8167
+spring:
+  application:
+    name: consumer-1
+  main:
+    allow-bean-definition-overriding: true

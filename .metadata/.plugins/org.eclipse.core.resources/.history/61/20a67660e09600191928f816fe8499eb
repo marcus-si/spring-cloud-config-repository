@@ -1,0 +1,33 @@
+dubbo:
+  application:
+    qos:
+      accept:
+        foreign:
+          ip: false
+      enable: true
+      port: 33333
+  cloud:
+    subscribed-services: nacos-producer
+  registry:
+    address: spring-cloud://localhost
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+server:
+  port: 9082
+spring:
+  application:
+    name: ${user.name}
+  main:
+    allow-bean-definition-overriding: true
+  redis:
+    database: 0
+    host: 192.168.66.131
+    port: 6379
+zuul:
+  routes:
+    myDemo:
+      path: /myDemo/**
+      url: forward:/demo

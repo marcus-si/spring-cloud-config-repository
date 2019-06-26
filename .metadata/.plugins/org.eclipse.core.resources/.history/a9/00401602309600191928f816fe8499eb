@@ -1,0 +1,5 @@
+package com.example.springcloudconfigclient2;
+
+public class ConfigController {
+
+}

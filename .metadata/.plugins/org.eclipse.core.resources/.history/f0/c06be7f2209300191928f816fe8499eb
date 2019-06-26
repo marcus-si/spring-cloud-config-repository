@@ -1,0 +1,8 @@
+spring.application.name=spring-cloud-consul-producer
+server.port=8501
+spring.cloud.consul.host=192.168.66.100
+spring.cloud.consul.port=8500
+spring.cloud.consul.discovery.service-name=service-producer
+management.endpoints.web.exposure.include=health, info
+spring.cloud.consul.discovery.health-check-timeout=10s
+spring.cloud.consul.discovery.health-check-url=http://192.168.66.154:8501/actuator/health

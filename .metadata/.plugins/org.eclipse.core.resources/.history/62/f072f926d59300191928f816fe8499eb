@@ -1,0 +1,12 @@
+package com.example.springcloudnacosfeignapi;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@FeignClient(name="nacos-provider")
+public interface NacosFeign {
+
+	@GetMapping("/getProviderName")
+	String getProviderName();
+	
+}

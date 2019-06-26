@@ -1,0 +1,13 @@
+package com.example.springcloudconsulconsumer;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringCloudConsulConsumer1Application {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringCloudConsulConsumer1Application.class, args);
+	}
+
+}

@@ -1,0 +1,14 @@
+package com.example.springcloudconsulproducer;
+
+import eurekaserviceapi.EurekaServiceApi;
+
+
+public class EurekaServiceImpl implements EurekaServiceApi {
+
+	@Override
+	public String getMsg() {
+		// TODO Auto-generated method stub
+		return "Consul Message";
+	}
+
+}

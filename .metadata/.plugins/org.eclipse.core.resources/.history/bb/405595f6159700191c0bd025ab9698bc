@@ -1,0 +1,56 @@
+package com.example.springclouddynamicdatasources;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
+import javax.validation.constraints.NotNull;
+
+import org.springframework.boot.jdbc.DataSourceBuilder;
+
+public class MultiDataSources {
+
+	public static DataSource createDataSource(ClientDatabase clientDatabase) {
+		@SuppressWarnings("unchecked")
+		DataSourceBuilder<DataSource> builder = (DataSourceBuilder<DataSource>) DataSourceBuilder.create();
+		return builder.url("jdbc:h2:~/" + clientDatabase).driverClassName("org.h2.Driver").username("sa").build();
+	}
+
+	public static DataSource setMultiDataSources() {
+		Map<Object, Object> targetDataSources = new HashMap<>();
+		DataSource clientADataSource = createDataSource(ClientDatabase.CLIENT_A);
+		DataSource clientBDataSource = createDataSource(ClientDatabase.CLIENT_B);
+		targetDataSources.put(ClientDatabase.CLIENT_A, clientADataSource);
+		targetDataSources.put(ClientDatabase.CLIENT_B, clientBDataSource);
+
+		ClientDatasourceRouter clientDatasourceRouter = new ClientDatasourceRouter();
+		clientDatasourceRouter.setTargetDataSources(targetDataSources);
+		clientDatasourceRouter.setDefaultTargetDataSource(clientADataSource);
+
+		return clientDatasourceRouter;
+	}
+
+	private static DataSource createDataSource(DataSourcePojo dataSourcePojo) {
+		@SuppressWarnings("unchecked")
+		DataSourceBuilder<DataSource> builder = (DataSourceBuilder<DataSource>) DataSourceBuilder.create();
+		return builder.url(dataSourcePojo.getUrl()).driverClassName(dataSourcePojo.getDriverClassName())
+				.username(dataSourcePojo.getUsername()).build();
+	}
+
+	public static DataSource setMultiDataSources(@NotNull List<DataSourcePojo> dataSourcePojos) {
+		Map<Object, Object> targetDataSources = new HashMap<>();
+		
+		
+		
+		DataSource clientADataSource = createDataSource(ClientDatabase.CLIENT_A);
+		DataSource clientBDataSource = createDataSource(ClientDatabase.CLIENT_B);
+		targetDataSources.put(ClientDatabase.CLIENT_A, clientADataSource);
+		targetDataSources.put(ClientDatabase.CLIENT_B, clientBDataSource);
+
+		ClientDatasourceRouter clientDatasourceRouter = new ClientDatasourceRouter();
+		clientDatasourceRouter.setTargetDataSources(targetDataSources);
+		clientDatasourceRouter.setDefaultTargetDataSource(clientADataSource);
+
+		return clientDatasourceRouter;
+	}
+}

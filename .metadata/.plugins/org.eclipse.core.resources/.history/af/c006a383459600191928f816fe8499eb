@@ -1,0 +1,5 @@
+server:
+  port: 8282
+spring:  application:    name: config-client
+management:  endpoints:    web:      exposure:        include: health,info,refresh
+  endpoint:    refresh:      enabled: true              

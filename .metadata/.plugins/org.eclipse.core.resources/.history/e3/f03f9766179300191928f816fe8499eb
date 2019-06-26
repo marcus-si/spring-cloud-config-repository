@@ -1,0 +1,5 @@
+package com.example.springcloudconsulproducer;
+
+public class EurekaServiceImpl {
+
+}

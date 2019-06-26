@@ -1,0 +1,4 @@
+server.port=9081
+spring.application.name=nacos-producer
+spring.cloud.nacos.discovery.server-addr=192.168.66.100:8848
+management.endpoints.web.exposure.include=*

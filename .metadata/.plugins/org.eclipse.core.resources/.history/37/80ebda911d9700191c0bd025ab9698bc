@@ -1,0 +1,51 @@
+package com.example.springclouddynamicdatasources;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DataSourceBeanProcessor implements BeanPostProcessor {
+
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+	
+	private String targetBeanName = "datasource";
+	
+	private boolean shouldUpdate = false;
+
+	@Override
+	public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		
+		if ( shouldUpdate && StringUtils.endsWithIgnoreCase(beanName, targetBeanName) ) {
+            bean = defaultListableBeanFactory.createBean(DataSource.class);			
+		}
+		return BeanPostProcessor.super.postProcessBeforeInitialization(bean, beanName);
+	}
+
+	public String getTargetBeanName() {
+		return targetBeanName;
+	}
+
+	public void setTargetBeanName(String targetBeanName) {
+		this.targetBeanName = targetBeanName;
+	}
+
+	public boolean isShouldUpdate() {
+		return shouldUpdate;
+	}
+
+	public void setShouldUpdate(boolean shouldUpdate) {
+		this.shouldUpdate = shouldUpdate;
+	}
+	
+	
+	
+	
+	
+}

@@ -1,0 +1,47 @@
+package com.example.springclouddynamicdatasources;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowire;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.BeanPostProcessor;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DataSourceBeanProcessor  {
+
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+	
+	private String targetBeanName = "datasource";
+	
+	private boolean shouldUpdate = false;
+
+    public void updateDataSourceBean() {
+    	defaultListableBeanFactory.createBean(DataSource.class, Autowire.BY_TYPE.value(), true);
+    }
+
+	public String getTargetBeanName() {
+		return targetBeanName;
+	}
+
+	public void setTargetBeanName(String targetBeanName) {
+		this.targetBeanName = targetBeanName;
+	}
+
+	public boolean isShouldUpdate() {
+		return shouldUpdate;
+	}
+
+	public void setShouldUpdate(boolean shouldUpdate) {
+		this.shouldUpdate = shouldUpdate;
+	}
+	
+	
+	
+	
+	
+}

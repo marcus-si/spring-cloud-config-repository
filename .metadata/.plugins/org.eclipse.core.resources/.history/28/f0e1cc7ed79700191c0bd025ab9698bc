@@ -1,0 +1,19 @@
+package com.example.springclouddynamicdatasources;
+
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class SpringCloudDynamicDatasourcesApplication {
+
+	@Value("${spring.cloud.config.nacos.config.namespace}")
+	private static String nameString;
+	
+	public static void main(String[] args) {
+		SpringApplication.run(SpringCloudDynamicDatasourcesApplication.class, args);
+		System.out.println(nameString);
+	}
+
+}

@@ -1,0 +1,3 @@
+#sharing configuration of nacos_consumer
+spring:  cloud:    nacos:      config:        
+          

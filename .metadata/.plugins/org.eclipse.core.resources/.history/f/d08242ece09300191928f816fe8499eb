@@ -1,0 +1,9 @@
+package com.example.springcloudnacosconsumer;
+
+import org.springframework.cloud.openfeign.FeignClient;
+
+@FeignClient(value="nacos-provider")
+public interface EchoService extends NacosFeign{
+
+	
+}

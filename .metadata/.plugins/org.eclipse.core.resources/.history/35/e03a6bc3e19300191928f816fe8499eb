@@ -1,0 +1,12 @@
+package com.example.springcloudnacos;
+
+import com.example.springcloudnacosfeignapi.EchoService;
+
+public class EchoServiceImpl implements EchoService{
+
+	@Override
+	public String echo(String message) {
+		return "[echo] Hello, " + message;
+	}
+
+}

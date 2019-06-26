@@ -1,0 +1,15 @@
+package com.example.springcloudnacos;
+
+import org.apache.dubbo.config.annotation.Service;
+
+import com.example.springcloudnacosfeignapi.EchoService;
+
+@Service
+public class EchoServiceImpl implements EchoService{
+
+	@Override
+	public String echo(String message) {
+		return "[echo] Hello, " + message;
+	}
+
+}

@@ -1,0 +1,10 @@
+server.port=9081
+spring.application.name=nacos-producer
+spring.main.allow-bean-definition-overriding=true
+spring.cloud.nacos.discovery.server-addr=192.168.66.100:8848
+spring.cloud.nacos.discovery.service=nacos-producer
+management.endpoints.web.exposure.include=*
+dubbo.scan.base-packages=com.example.springcloudnacos,com.example.springcloudnacosfeignapi
+dubbo.protocol.name=dubbo
+dubbo.protocol.port=-1
+dubbo.registry.address=spring-cloud://192.168.66.154

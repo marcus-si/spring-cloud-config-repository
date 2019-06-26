@@ -1,0 +1,5 @@
+package com.example.springcloudnacos;
+
+public class NacosFeignImpl {
+
+}

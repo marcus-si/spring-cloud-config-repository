@@ -1,0 +1,13 @@
+package com.example.springclouddynamicdatasources;
+
+import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
+
+public class ClientDatasourceRouter extends AbstractRoutingDataSource {
+
+	@Override
+	protected Object determineCurrentLookupKey() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+}

@@ -1,0 +1,25 @@
+package com.example.springcloudconsulconsumer;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import eurekaserviceapi.EurekaServiceApi;
+import eurekaserviceapi.NewEurekaServiceApi;
+
+@RestController
+public class ConsulController {
+	@Autowired
+	private EurekaServiceApi eurekaServiceApi;
+	@Autowired
+	private NewEurekaServiceApi newEurekaServiceApi;
+	@GetMapping("/hi")
+	public String sayHi() {
+		return "Consul " + eurekaServiceApi.getMsg();
+	}
+
+	@GetMapping("/great")
+	public String sayGreat() {
+		return "New consul " + newEurekaServiceApi.getNewMsg();
+	}
+}

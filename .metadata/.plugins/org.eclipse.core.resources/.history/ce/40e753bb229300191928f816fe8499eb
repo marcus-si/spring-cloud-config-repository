@@ -1,0 +1,5 @@
+package com.example.springcloudconsulconsumer;
+
+public class ConsulController {
+
+}

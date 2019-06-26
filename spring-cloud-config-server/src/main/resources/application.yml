@@ -1,0 +1,7 @@
+server:
+  port: 8181
+spring:  application:    name: config-server
+  cloud:    config:      server:        git:          uri: https://github.com/marcus-si/spring-cloud-config-repository
+          search-paths: dev*/*             
+          username: 
+          password: 

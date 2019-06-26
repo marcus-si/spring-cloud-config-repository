@@ -1,0 +1,6 @@
+spring:
+  kafka:
+    bootstrap-servers: 192.168.66.131:9093
+    consumer:      group-id: spring-cloud-config
+  cloud:    bus:      refresh:        enabled: true
+management:  endpoints:    web:      exposure:        include: '*'        

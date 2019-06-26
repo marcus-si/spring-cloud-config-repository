@@ -1,0 +1,4 @@
+spring:  cloud:    config:      uri: http://localhost:8181      profile: dev      label: master      name: service1#      discovery:#        service-id: config-server#        enabled: true      #username:       #password:     bus:      refresh:        enabled: true  kafka:    bootstrap-servers: dev.redis2:9092    
+
+
+      

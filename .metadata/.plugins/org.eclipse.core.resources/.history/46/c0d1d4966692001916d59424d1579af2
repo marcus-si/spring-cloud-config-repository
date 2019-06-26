@@ -1,0 +1,5 @@
+spring.application.name=consumer-1
+server.port=8167
+#eureka.client.service-url.defaultZone=http://server1:8762/eureka/,http://server2:8763/eureka/
+eureka.instance.prefer-ip-address=true
+spring.main.allow-bean-definition-overriding=true

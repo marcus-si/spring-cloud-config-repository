@@ -1,0 +1,13 @@
+application: ''
+enabled: true
+endpoint: ''
+endpoints: ''
+exposure: ''
+include: health,info,refresh
+management: ''
+name: config-client-2
+port: 8383
+refresh: ''
+server: ''
+spring: ''
+web: ''

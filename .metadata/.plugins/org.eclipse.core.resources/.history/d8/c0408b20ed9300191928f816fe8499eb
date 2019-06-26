@@ -1,0 +1,16 @@
+package com.example.springcloudnacosconsumer;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/demo")
+public class ZuulDemoController {
+	
+	@GetMapping("/helo")
+	public String hello(String name) {
+		return String.format("Hi, %s, this is zuul api!", name);
+	}
+
+}

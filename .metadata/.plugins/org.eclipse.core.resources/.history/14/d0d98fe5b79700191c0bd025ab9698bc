@@ -1,0 +1,92 @@
+package com.example.springclouddynamicdatasources;
+
+
+import java.util.Map;
+
+import javax.sql.DataSource;
+import javax.validation.constraints.NotBlank;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.cloud.alibaba.nacos.refresh.NacosContextRefresher;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+import org.springframework.cloud.endpoint.event.RefreshEvent;
+import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class DataSourceController {
+	private static final Logger LOGGER =LoggerFactory.getLogger(DataSourceController.class);
+	
+	@Autowired
+	private UserRepository userRepository;
+	@Autowired
+	private DataSourceProperties dataSourceProperties;
+	@Autowired
+	private DataSourceBeanProcessor dataSourceBeanProcessor;
+	
+	@Autowired
+	private DefaultListableBeanFactory defaultListableBeanFactory;
+
+	@GetMapping("/save/{dataSourceId}")
+	public String saveUser(@PathVariable @NotBlank Integer dataSourceId) {
+		//save to database A		
+		ClientDatabase clientDatabase = ClientDatabase.ofId(dataSourceId);
+		ClientDatabaseContextHolder.set(clientDatabase);
+		User user = new User();
+		user.setName(clientDatabase.getName());
+		try {
+			userRepository.save(user);
+			return String.format("Succeeded. User %s has been save to Database %s", user.getName(), clientDatabase);			
+		} catch (Exception e) {
+			return String.format("Failed to save User %s to Database %s", user.getName(), clientDatabase);
+		}	
+
+		
+	}
+	
+	@GetMapping("/update")
+	public String updateDatasources() {
+		try {
+			boolean bean = defaultListableBeanFactory.containsBean("datasource");
+			boolean containsBean = defaultListableBeanFactory.containsBean("clientDatasourceRouter");
+			DataSource bean2 = defaultListableBeanFactory.getBean(DataSource.class);
+			String[] beanNamesForType = defaultListableBeanFactory.getBeanNamesForType(DataSource.class);
+			  //BeanDefinitionBuilder创建bean定义
+			defaultListableBeanFactory.removeBeanDefinition(beanNamesForType[0]);
+	        BeanDefinitionBuilder beanDefinitionBuilder = BeanDefinitionBuilder.genericBeanDefinition(ClientDatasourceRouter.class);
+	        Map<Object, Object> dataSourceMap = MultiDataSources.buildDataSourceMap(dataSourceProperties.getDataSourceProperties());
+			beanDefinitionBuilder.addPropertyValue("targetDataSources", dataSourceMap);
+			beanDefinitionBuilder.addPropertyValue("defaultTargetDataSource", dataSourceMap.get(ClientDatabase.ofId(1)));
+			defaultListableBeanFactory.registerBeanDefinition(beanNamesForType[0], beanDefinitionBuilder.getRawBeanDefinition());
+			DataSource bean3 = defaultListableBeanFactory.getBean(DataSource.class);		
+			dataSourceBeanProcessor.setShouldUpdate(true);
+			return "update data sources successfully." + dataSourceProperties.getDataSourceProperties();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "Failed to update data sources."  + dataSourceProperties.getDataSourceProperties();
+		}
+		
+		
+	}
+	
+	@EventListener(classes = RefreshEvent.class)
+	public void updateDataSources(RefreshEvent event) {
+		Object source = event.getSource();
+		NacosContextRefresher refresher = (NacosContextRefresher) source;
+		String eventDesc = event.getEventDesc();
+		Object event2 = event.getEvent();
+
+//	  ExpressionParser parser = new SpelExpressionParser(); 
+//	  Expression exp =  parser.parseExpression("'Hello World'.bytes.length"); 
+//	  Object value =  exp.getValue();
+
+		LOGGER.info("changed properties:{}", event);
+	}
+
+}

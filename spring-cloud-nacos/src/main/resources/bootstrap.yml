@@ -1,0 +1,2 @@
+#sharing configuration of nacos_consumerspring:  cloud:    nacos:      config:        server-addr: 192.168.66.100:8848,192.168.66.100:8848        namespace: ad23a4bc-49f7-4767-9499-9d32359662c7 #dev        prefix: nacos_consumer        group: nacos_consumer        file-extension: properties                
+          

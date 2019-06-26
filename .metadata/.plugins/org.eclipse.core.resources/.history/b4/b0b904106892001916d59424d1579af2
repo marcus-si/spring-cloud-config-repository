@@ -1,0 +1,14 @@
+package eurekaserviceapi;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+
+import feign.hystrix.FallbackFactory;
+
+@FeignClient(name="EurekaService", fallback=EurekaServiceApi.class )
+public interface NewEurekaServiceApi {
+
+	@GetMapping("/getNew")
+	String getNewMsg();
+	
+}
