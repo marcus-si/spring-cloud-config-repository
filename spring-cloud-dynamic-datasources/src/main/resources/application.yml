@@ -1,19 +1,28 @@
+server:  port: 9081
 spring:
-  application:    name: MultiDataSources
+  application:    name: datasource-provider
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
-    hibernate:
+    database-platform: org.hibernate.dialect.MySQLDialect    hibernate:
       ddl-auto: update
     properties:
       hibernate:
         show_sql: true
         use_sql_comments: true
-        format_sql: true
+        format_sql: true    
   h2:
     console:
       enabled: true
       path: /console
       settings:
         trace: false
-        web-allow-others: false        
-logging:  level:    '*' : debug
+        web-allow-others: false          cloud:    nacos:      discovery:                server-addr: 192.168.66.100:8848        #service: datasource-provider   main:    allow-bean-definition-overriding: true
+logging:  level:    com.alibaba.nacos: ERROR
+
+dubbo:  scan:    base-packages: com.example.springclouddynamicdatasources
+  protocol:    name: dubbo
+    port: 20883
+  registry:    address: spring-cloud://localhost  application:        qos:
+      port: 22223
+
+    
+

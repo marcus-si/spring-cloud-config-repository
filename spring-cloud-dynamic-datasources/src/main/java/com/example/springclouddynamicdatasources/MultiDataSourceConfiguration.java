@@ -7,6 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
+import com.example.springclouddatasourceapi.ClientDatasourceRouter;
+
 @Configuration
 @Order(2)
 public class MultiDataSourceConfiguration {
